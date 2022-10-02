@@ -1,0 +1,52 @@
+# Reference: <https://postmarketos.org/vendorkernel>
+# Kernel config based on: arch/arm/configs/LEO_defconfig)
+
+pkgname=linux-nokia-sparkler
+pkgver=4.9.240
+pkgrel=0
+pkgdesc="Nokia 8000 4G kernel fork"
+arch="armv7"
+_carch="arm"
+_flavor="nokia-sparkler"
+url="https://kernel.org"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps pmb:cross-native"
+makedepends="
+	bash
+	bc
+	bison
+	devicepkg-dev
+	flex
+	openssl-dev
+	perl
+"
+
+# Source
+_config="config-$_flavor.$arch"
+source="
+	$pkgname-$msm-4.9.tar.gz::http://127.0.0.1:8000/msm-4.9.tar.gz
+	$_config
+"
+builddir="$srcdir/msm-4.9"
+_outdir="out"
+
+prepare() {
+	default_prepare
+	. downstreamkernel_prepare
+}
+
+build() {
+	unset LDFLAGS
+	make O="$_outdir" ARCH="$_carch" CC="${CC:-gcc}" \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-postmarketOS"
+}
+
+package() {
+	downstreamkernel_package "$builddir" "$pkgdir" "$_carch" \
+		"$_flavor" "$_outdir"
+}
+
+sha512sums="
+5c2954c47b9cdc66fbb6170d391620d90a89b637a65b24eebe6f587e9750ddfdafe73fdeeac3ff9d1e31682755700f063028f88d7d64fc427bf3e98016280a10  linux-nokia-sparkler--4.9.tar.gz
+760139385259c1777d78d362b2751ca381998a22aff87f580f7f2e2e576f3144030fb590aa72d9f037fdb50b0c01d9424eebbbb4517ac9427c5dace177e6db9d  config-nokia-sparkler.armv7
+"
