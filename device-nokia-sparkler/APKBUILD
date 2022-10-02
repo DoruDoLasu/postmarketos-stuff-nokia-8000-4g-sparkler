@@ -1,0 +1,31 @@
+# Reference: <https://postmarketos.org/devicepkg>
+pkgname=device-nokia-sparkler
+pkgdesc="Nokia 8000 4G"
+pkgver=0.1
+pkgrel=0
+url="https://postmarketos.org"
+license="MIT"
+arch="armv7"
+options="!check !archcheck"
+depends="
+	linux-nokia-sparkler
+	mesa-dri-swrast
+	msm-fb-refresher
+	postmarketos-base
+	mkbootimg
+	
+"
+makedepends="devicepkg-dev"
+source="deviceinfo"
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+}
+
+sha512sums="
+a20abfc779d44353bc83ea41f28666a002e801a206a79d626019201a153095cbd06f16f6f1fc4dae3e05c7fde8af157262c28fc6bac15f772f94d414243009e5  deviceinfo
+"
